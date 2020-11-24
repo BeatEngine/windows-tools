@@ -1,0 +1,1 @@
+PowerShell.exe "Start-Process GetWindowsSystemRights.exe -Verb RunAs"
