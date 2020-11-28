@@ -3,17 +3,76 @@
 #include <stdio.h>
 #include <string.h>
 
-void fsearch(char* root, char* fname, long size_min, FILE* csvOut = 0)
+unsigned long fileSize(char* path)
+{
+    FILE* f = fopen(path, "rb");
+    if(f == 0)
+    {
+        return 0;
+    }
+    fseek(f, 0, SEEK_END);
+    unsigned long sz = ftell(f);
+    fclose(f);
+    return sz;
+}
+
+#define largeToInteger(low, high) (static_cast<long long>(high) << 32) | low
+
+
+double powul(long x, int p)
+{
+    long res = x;
+    for(int i = 1; i < p; i++)
+    {
+        res *= x;
+    }
+    return (double)res;
+}
+
+long countSubs(char* path)
+{
+    WIN32_FIND_DATA fdFile;
+    HANDLE hFind = NULL;
+    long result = 0;
+    if((hFind = FindFirstFile(path, &fdFile)) == INVALID_HANDLE_VALUE)
+    {
+        return 0;
+    }
+    do
+    {
+        if(strcmp(fdFile.cFileName, ".") != 0 && strcmp(fdFile.cFileName, ".."))
+        {
+            result++;
+        }
+    }
+    while(FindNextFile(hFind, &fdFile));
+    FindClose(hFind);
+    return result;
+}
+
+long long fsearch(char* root, char* fname, long size_min, FILE* csvOut = 0, double* total = 0, int deepth = 1, double partial = 1)
 {
     WIN32_FIND_DATA fdFile;
     HANDLE hFind = NULL;
     char sPath[2048];
     bool isNameNotRelevant = strcmp(fname,"*") == 0;
     sprintf(sPath, "%s\\*.*", root);
+    long long sum = 0;
+    bool newed = false;
+
+    if(total == 0)
+    {
+        total = new double;
+        *total = 0;
+        newed = true;
+    }
+
     if((hFind = FindFirstFile(sPath, &fdFile)) == INVALID_HANDLE_VALUE)
     {
-        return;
+        return 0;
     }
+    long csubs = countSubs(sPath);
+    double nprt = partial;
     do
     {
         if(strcmp(fdFile.cFileName, ".") != 0 && strcmp(fdFile.cFileName, "..") != 0 && (isNameNotRelevant || strstr(fdFile.cFileName, fname) != 0 || (fdFile.dwFileAttributes &FILE_ATTRIBUTE_DIRECTORY)))
@@ -21,40 +80,71 @@ void fsearch(char* root, char* fname, long size_min, FILE* csvOut = 0)
             sprintf(sPath, "%s\\%s", root, fdFile.cFileName);
             if(fdFile.dwFileAttributes &FILE_ATTRIBUTE_DIRECTORY)
             {
-                if(size_min == 0 && (isNameNotRelevant || strstr(fdFile.cFileName, fname) != 0))
+                if(!csvOut &&size_min == 0 && (isNameNotRelevant || strstr(fdFile.cFileName, fname) != 0))
                 {
-                    if(csvOut)
-                    {
-                        fprintf(csvOut, "Directory;%s;0\n", sPath);
-                    }
-                    else
-                    {
-                        printf("Directory: %s\n", sPath);
-                    }
+                    printf("Directory: %s\n", sPath);
                 }
-                fsearch(sPath, fname, size_min, csvOut); //Recursion, I love it!
+                long long dirSum = fsearch(sPath, fname, size_min, csvOut, total, deepth+1, partial/csubs); //Recursion, I love it!
+                nprt -= partial/csubs;
+                if(csvOut && size_min == 0 && (isNameNotRelevant || strstr(fdFile.cFileName, fname) != 0))
+                {
+                    fprintf(csvOut, "Directory;\"%s\";%lld;%lld\n", sPath, dirSum, dirSum/1000000);
+                }
+                sum += dirSum;
             }
             else if(fdFile.nFileSizeLow > size_min && (isNameNotRelevant || strstr(fdFile.cFileName, fname) != 0)){
 
+                //unsigned int tfls[2] = {fdFile.nFileSizeLow, fdFile.nFileSizeHigh};
+                long long tfsz = largeToInteger(fdFile.nFileSizeLow, fdFile.nFileSizeHigh);//fileSize(sPath);//*((unsigned long*)(tfls));
+                sum += tfsz;
                 if(csvOut)
                 {
-                    int tfls[2] = {fdFile.nFileSizeLow, fdFile.nFileSizeHigh};
-                    unsigned long tfsz = *((unsigned long*)(tfls));
                     if(tfsz < 0)
                     {
                         tfsz = 0;
                     }
-                    fprintf(csvOut, "File;%s;%lu\n", sPath, tfsz);
+                    fprintf(csvOut, "File;\"%s\";%lld;%lld\n", sPath, tfsz, tfsz/1000000);
                 }
                 else
                 {
-                    printf("File: %s\n", sPath);
+                    if(tfsz > 1000000000)
+                    {
+                        printf("File: %s  %d GB\n", sPath, tfsz/1000000000);
+                    }
+                    else if(tfsz > 1000000)
+                    {
+                        printf("File: %s  %d MB\n", sPath, tfsz/1000000);
+                    }
+                    else if(tfsz > 1000)
+                    {
+                        printf("File: %s  %d KB\n", sPath, tfsz/1000);
+                    }
+                    else
+                    {
+                        printf("File: %s  %d Bytes\n", sPath, tfsz);
+                    }
                 }
             }
+
         }
     }
     while(FindNextFile(hFind, &fdFile)); //Find the next file.
     FindClose(hFind); //Always, Always, clean things up!
+    *total += nprt;
+
+    if(*total>1)
+    {
+        *total = 1.0;
+    }
+    if(csvOut && deepth < 5)
+    {
+        printf("\r%f% ", (float)(*total*100));
+    }
+    if(newed)
+    {
+        delete total;
+    }
+    return sum;
 }
 
 
@@ -99,7 +189,7 @@ int main(int args, char** argv)
         if(csv)
         {
             FILE* f = fopen(csvName, "w");
-            fprintf(f, "Type;Path;Size in MB\n");
+            fprintf(f, "Type;Path;Size in Bytes;Size in MB\n");
             fsearch(root, name, minSize, f);
             fclose(f);
         }
