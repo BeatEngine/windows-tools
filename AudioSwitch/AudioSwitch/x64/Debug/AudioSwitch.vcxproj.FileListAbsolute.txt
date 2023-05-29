@@ -1,0 +1,4 @@
+C:\Users\David\source\repos\AudioSwitch\AudioSwitch\x64\Debug\AudioSwitch.vcxproj.AssemblyReference.cache
+C:\Users\David\source\repos\AudioSwitch\AudioSwitch\x64\Debug\AudioSwitch.vcxproj.SuggestedBindingRedirects.cache
+C:\Users\David\source\repos\AudioSwitch\AudioSwitch\x64\Debug\AudioSwitch.Form1.resources
+C:\Users\David\source\repos\AudioSwitch\AudioSwitch\x64\Debug\AudioSwitch.vcxproj.GenerateResource.cache

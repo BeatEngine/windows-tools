@@ -1,0 +1,12 @@
+﻿  CppCLR_WinFormsProject.cpp
+C:\Users\David\source\repos\AudioSwitch\AudioSwitch\StringUtils.h(188,1): warning C4267: "Initialisierung": Konvertierung von "size_t" nach "int", Datenverlust möglich
+C:\Users\David\source\repos\AudioSwitch\AudioSwitch\StringUtils.h(251,1): warning C4267: "Argument": Konvertierung von "size_t" nach "long", Datenverlust möglich
+C:\Users\David\source\repos\AudioSwitch\AudioSwitch\StringUtils.h(236,13): warning C4101: "a": Unreferenzierte lokale Variable
+C:\Users\David\source\repos\AudioSwitch\AudioSwitch\Form1.h(26,55): warning C4267: "Argument": Konvertierung von "size_t" nach "int", Datenverlust möglich
+C:\Users\David\source\repos\AudioSwitch\AudioSwitch\Form1.h(44,3): warning C4267: "Initialisierung": Konvertierung von "size_t" nach "int", Datenverlust möglich
+C:\Users\David\source\repos\AudioSwitch\AudioSwitch\Form1.h(64,4): warning C4996: '_sleep': This function or variable has been superceded by newer library or operating system functionality. Consider using Sleep instead. See online help for details.
+C:\Users\David\source\repos\AudioSwitch\AudioSwitch\Form1.h(66,3): warning C4996: '_sleep': This function or variable has been superceded by newer library or operating system functionality. Consider using Sleep instead. See online help for details.
+C:\Users\David\source\repos\AudioSwitch\AudioSwitch\Form1.h(270,1): warning C4267: "Argument": Konvertierung von "size_t" nach "int", Datenverlust möglich
+C:\Users\David\source\repos\AudioSwitch\AudioSwitch\Form1.h(272,1): warning C4267: "Argument": Konvertierung von "size_t" nach "int", Datenverlust möglich
+  AssemblyInfo.obj : MSIL-Modulgefunden; inkrementelles Verknüpfen wird für MSIL deaktiviert; vollständiger Link wird durchgeführt
+  AudioSwitch.vcxproj -> C:\Users\David\source\repos\AudioSwitch\x64\Release\AudioSwitch.exe
