@@ -1,7 +1,0 @@
-﻿  CppCLR_WinFormsProject.cpp
-C:\Users\David\source\repos\AudioSwitch\AudioSwitch\StringUtils.h(188,1): warning C4267: "Initialisierung": Konvertierung von "size_t" nach "int", Datenverlust möglich
-C:\Users\David\source\repos\AudioSwitch\AudioSwitch\StringUtils.h(251,1): warning C4267: "Argument": Konvertierung von "size_t" nach "long", Datenverlust möglich
-C:\Users\David\source\repos\AudioSwitch\AudioSwitch\StringUtils.h(236,13): warning C4101: "a": Unreferenzierte lokale Variable
-C:\Users\David\source\repos\AudioSwitch\AudioSwitch\Form1.h(21,55): warning C4267: "Argument": Konvertierung von "size_t" nach "int", Datenverlust möglich
-  AssemblyInfo.obj : MSIL-Modulgefunden; inkrementelles Verknüpfen wird für MSIL deaktiviert; vollständiger Link wird durchgeführt
-  AudioSwitch.vcxproj -> C:\Users\David\source\repos\AudioSwitch\x64\Debug\AudioSwitch.exe
